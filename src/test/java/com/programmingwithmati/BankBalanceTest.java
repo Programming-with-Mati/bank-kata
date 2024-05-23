@@ -25,5 +25,6 @@ class BankBalanceTest {
     assertThrows(, () -> bankBalance.processTransaction(transaction))
 
     assertEquals(BigDecimal.valueOf(20), newBalance.amount());
+    //New test
   }
 }
