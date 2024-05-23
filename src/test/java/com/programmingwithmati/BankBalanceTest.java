@@ -2,6 +2,7 @@ package com.programmingwithmati;
 
 import com.programmingwithmati.enums.TransactionType;
 import com.programmingwithmati.exception.InvalidAccountException;
+import com.programmingwithmati.exception.NotEnoughFundsException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -36,5 +37,13 @@ class BankBalanceTest {
     var newBalance = bankBalance.processTransaction(transaction);
 
     assertEquals(BigDecimal.valueOf(90), newBalance.amount());
+  }
+
+  @Test
+  void givenInValidAmount_whenWithdraw_thenExpectException(){
+    var bankBalance = new BankBalance("acc-1", BigDecimal.valueOf(100));
+    var transaction = new Transaction("t-1", "acc-1", BigDecimal.valueOf(200.00), TransactionType.WITHDRAW);
+
+    assertThrows(NotEnoughFundsException.class, () -> bankBalance.processTransaction(transaction));
   }
 }
