@@ -1,5 +1,6 @@
 package com.programmingwithmati;
 
+import com.programmingwithmati.exception.InvalidAccountException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ class BankBalanceTest {
   void testTransactionIsForDifferentAccount() {
     var bankBalance = new BankBalance("acc-1", BigDecimal.TEN);
     var transaction = new Transaction("t-1", "acc-2", BigDecimal.TEN);
+    assertThrows(InvalidAccountException.class, () -> bankBalance.processTransaction(transaction));
     assertThrows(, () -> bankBalance.processTransaction(transaction))
 
     assertEquals(BigDecimal.valueOf(20), newBalance.amount());
