@@ -1,26 +1,26 @@
 package com.programmingwithmati;
 
-import com.programmingwithmati.enums.TransactionType;
 import com.programmingwithmati.exception.InvalidAccountException;
 import com.programmingwithmati.exception.NotEnoughFundsException;
 
 import java.math.BigDecimal;
 
-public record   BankBalance(
+public record BankBalance(
         String accountId,
         BigDecimal amount
 ) {
 
-  BankBalance processTransaction(Transaction transaction) {
-      validateTransaction(transaction);
-
-      if(transaction.type().isWithdraw()){
-          validateFunds(transaction);
-
-          return new BankBalance(this.accountId, this.amount.subtract(transaction.amount()));
-      }
-      return new BankBalance(this.accountId, this.amount.add(transaction.amount()));
-  }
+    BankBalance processTransaction(Transaction transaction) {
+        validateTransaction(transaction);
+        return switch (transaction.type()) {
+            case DEPOSIT -> new BankBalance(this.accountId, this.amount.add(transaction.amount()));
+            case WITHDRAW -> {
+                validateFunds(transaction);
+                yield new BankBalance(this.accountId, this.amount.subtract(transaction.amount()));
+            }
+            case CHECK_BALANCE -> new BankBalance(this.accountId, this.amount);
+        };
+    }
 
     private void validateFunds(Transaction transaction) {
         if(transaction.amount().compareTo(this.amount) > 0){
@@ -29,11 +29,8 @@ public record   BankBalance(
     }
 
     private void validateTransaction(Transaction transaction) {
-      if (!this.accountId.equals(transaction.accountId())) {
-          throw new InvalidAccountException("Invalid account for the transaction");
-      }
-  }
-
-
-
+        if (!this.accountId.equals(transaction.accountId())) {
+            throw new InvalidAccountException("Invalid account for the transaction");
+        }
+    }
 }
