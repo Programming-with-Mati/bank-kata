@@ -44,4 +44,13 @@ class BankBalanceTest {
 
         assertThrows(NotEnoughFundsException.class, () -> bankBalance.processTransaction(transaction));
     }
+
+    @Test
+    void checkBalanceForGivenAccount() {
+        var bankBalance = new BankBalance("acc-1", BigDecimal.valueOf(2000));
+        var transaction = new Transaction("t-1", "acc-1", BigDecimal.valueOf(200.00), TransactionType.CHECK_BALANCE);
+        BankBalance balance = bankBalance.processTransaction(transaction);
+
+        assertEquals(bankBalance.amount(), balance.amount());
+    }
 }

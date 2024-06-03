@@ -18,6 +18,7 @@ public record BankBalance(
                 validateFunds(transaction);
                 yield new BankBalance(this.accountId, this.amount.subtract(transaction.amount()));
             }
+            case CHECK_BALANCE -> new BankBalance(this.accountId, this.amount);
         };
     }
 
